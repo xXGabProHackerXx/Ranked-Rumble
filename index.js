@@ -6,7 +6,6 @@ const sqlite3 = require('sqlite3');
 const express = require('express');
 const app = express();
 app.use(express.json());
-const webApp = express();
 dotenv.config();
 
 const db = new sqlite3.Database('./database.db');
@@ -61,12 +60,12 @@ for (const file of eventFiles) {
 client.login(process.env.DISCORD_TOKEN);
 
 
-webApp.get('/api/greet', (req, res) => {
+app.get('/api/greet', (req, res) => {
 	res.json({ message: 'Hello from Express!' });
 });
 
 
-webApp.get('/api/leaderboard', (req, res) => {
+app.get('/api/leaderboard', (req, res) => {
 	const page = parseInt(req.query.page) || 1;
 	const perPage = 10;
 	const offset = (page - 1) * perPage;
@@ -272,15 +271,10 @@ app.post('/game-results', (req, res) => {
 		});
 	});
 });
+app.use(express.static('public'));
 
 // Start Server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 80;
 app.listen(PORT, () => {
 	console.log(`Server running on hehe:${PORT}`);
-});
-
-webApp.use(express.static('public'));
-
-webApp.listen(80, () => {
-	console.log('Web Server started');
 });
