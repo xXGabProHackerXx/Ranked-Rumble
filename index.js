@@ -6,6 +6,7 @@ const sqlite3 = require('sqlite3');
 const express = require('express');
 const app = express();
 app.use(express.json());
+const webApp = express();
 dotenv.config();
 
 const db = new sqlite3.Database('./database.db');
@@ -59,8 +60,43 @@ for (const file of eventFiles) {
 
 client.login(process.env.DISCORD_TOKEN);
 
-app.post('/upsert-data', (req, res) => {
-	res.send(req.body);
+
+webApp.get('/api/greet', (req, res) => {
+	res.json({ message: 'Hello from Express!' });
+});
+
+
+webApp.get('/api/leaderboard', (req, res) => {
+	const page = parseInt(req.query.page) || 1;
+	const perPage = 10;
+	const offset = (page - 1) * perPage;
+
+	// Get total count for pagination
+	db.get('SELECT COUNT(*) AS count FROM players', (err, countRow) => {
+		if (err) {
+			return res.status(500).json({ error: 'Failed to count players.' });
+		}
+
+		const totalPlayers = countRow.count;
+		const totalPages = Math.ceil(totalPlayers / perPage);
+
+		// Get leaderboard players sorted by ELO descending
+		db.all(
+			'SELECT name AS playerName, elo FROM players ORDER BY elo DESC LIMIT ? OFFSET ?',
+			[perPage, offset],
+			(err, rows) => {
+				if (err) {
+					return res.status(500).json({ error: 'Failed to retrieve leaderboard.' });
+				}
+
+				res.json({
+					players: rows,
+					totalPages,
+					currentPage: page,
+				});
+			},
+		);
+	});
 });
 
 app.post('/create-player', (req, res) => {
@@ -176,16 +212,6 @@ function calculateEloChange({ hostElo, clientElo, hostScore, clientScore, client
 	};
 }
 
-const testResult = calculateEloChange({
-	hostElo: 1400,
-	clientElo: 1400,
-	hostScore: 0,
-	clientScore: 2,
-	clientPing: 100,
-});
-
-console.log('Host ELO Change:', testResult.hostChange);
-console.log('Client ELO Change:', testResult.clientChange);
 
 app.post('/game-results', (req, res) => {
 	const { hostid, clientid, clientping, hostscore, clientscore } = req.body;
@@ -251,4 +277,10 @@ app.post('/game-results', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
 	console.log(`Server running on hehe:${PORT}`);
+});
+
+webApp.use(express.static('public'));
+
+webApp.listen(80, () => {
+	console.log('Web Server started');
 });

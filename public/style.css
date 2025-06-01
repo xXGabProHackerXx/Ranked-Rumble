@@ -1,0 +1,19 @@
+body {
+  font-family: sans-serif;
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+#leaderboard {
+  margin: 20px 0;
+}
+
+.player {
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+#pagination {
+  margin-top: 20px;
+}
