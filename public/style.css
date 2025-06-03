@@ -3,17 +3,33 @@ body {
   max-width: 600px;
   margin: 40px auto;
   text-align: center;
+  background-color: rgb(37, 37, 37);
+  color: white;
 }
 
 #leaderboard {
-  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.player {
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
+.playerPlacement {
+  text-align: right;
+}
+
+.playerUsername {
+  text-align: left;
+}
+
+.playerELO {
+  text-align: left;
 }
 
 #pagination {
   margin-top: 20px;
+}
+
+td, th {
+  padding: 5px 20px;
+  text-align: center;
 }

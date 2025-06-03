@@ -66,7 +66,7 @@ app.get('/api/greet', (req, res) => {
 
 
 app.get('/api/leaderboard', (req, res) => {
-	const page = parseInt(req.query.page) || 1;
+	const page = parseInt(req.query.page) || 10;
 	const perPage = 10;
 	const offset = (page - 1) * perPage;
 
@@ -92,6 +92,7 @@ app.get('/api/leaderboard', (req, res) => {
 					players: rows,
 					totalPages,
 					currentPage: page,
+					perPage,
 				});
 			},
 		);
@@ -210,7 +211,6 @@ function calculateEloChange({ hostElo, clientElo, hostScore, clientScore, client
 		clientChange: Math.round(clientDelta),
 	};
 }
-
 
 app.post('/game-results', (req, res) => {
 	const { hostid, clientid, clientping, hostscore, clientscore } = req.body;
