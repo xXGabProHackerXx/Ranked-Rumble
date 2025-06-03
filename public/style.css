@@ -11,18 +11,20 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .playerPlacement {
-  text-align: right;
+  text-align: left;
 }
 
 .playerUsername {
-  text-align: left;
+    text-align: center;
+    width: 100%;
 }
 
 .playerELO {
-  text-align: left;
+  text-align: right;
 }
 
 #pagination {
@@ -32,4 +34,49 @@ body {
 td, th {
   padding: 5px 20px;
   text-align: center;
+}
+
+body > img {
+    display: block;
+    margin: 0 auto;
+    padding-left: 2rem;
+}
+
+button {
+    background: #e7af93;
+    border: 1px #6e4c3f;
+    color: #3c1f17;
+    padding: 0.5rem 1.2rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+}
+
+button:hover {
+    background: #ba8a73;
+}
+
+button[disabled] {
+    opacity: 0.2;
+}
+
+h1 {
+    margin: 1.5rem;
+    padding-left: 2rem;
+}
+
+#pagination {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: min-content min-content 1fr min-content min-content;
+    margin: 0 auto;
+    justify-content: center;
+    align-items:center;
+}
+
+#pageInput {
+    width: 2rem !important;
+}
+
+#leaderboardtable {
+ width: 100%;   
 }
