@@ -164,7 +164,7 @@ function calculateEloChange({ hostElo, clientElo, hostScore, clientScore, client
 	const baseK = 32;
 
 	// Expected scores by classic ELO
-	const baseExpectedHost = 1 / (1 + Math.pow(10, (clientElo - hostElo) / 400));
+	const baseExpectedHost = 1 / (1 + Math.pow(10, (clientElo - hostElo) / 300));
 	const baseExpectedClient = 1 - baseExpectedHost;
 
 	// Ping ratio capped at 1 (300 ms max)

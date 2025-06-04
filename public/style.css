@@ -20,6 +20,7 @@ body {
 
 .playerUsername {
     text-align: center;
+    padding-right: 5rem;
     width: 100%;
 }
 
@@ -39,7 +40,6 @@ td, th {
 body > img {
     display: block;
     margin: 0 auto;
-    padding-left: 2rem;
 }
 
 button {
@@ -61,7 +61,6 @@ button[disabled] {
 
 h1 {
     margin: 1.5rem;
-    padding-left: 2rem;
 }
 
 #pagination {
@@ -77,6 +76,28 @@ h1 {
     width: 2rem !important;
 }
 
+#pageInfo {
+  padding-right: 3rem;
+}
+
 #leaderboardtable {
  width: 100%;   
+}
+
+.discord-outer-countainer {
+  display: flex;
+  justify-content: center; /* horizontal centering */
+  align-items: center;     /* vertical centering */
+  height: 100vh;           /* optional: to center vertically in viewport */
+}
+
+.discord {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+
+.discord-text {
+  margin-right: 10px;
 }
