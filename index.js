@@ -160,56 +160,32 @@ app.get('/player/:id', (req, res) => {
 	});
 });
 
-function calculateEloChange({ hostElo, clientElo, hostScore, clientScore, clientPing }) {
-	const baseK = 32;
+function calculateEloChange({
+	hostElo,
+	clientElo,
+	hostScore,
+	clientScore,
+	clientPing,
+}) {
+	const K = 34;
+	const clientRoundWeight = 2.0;
+	const maxPingEffect = 0.18;
+	const totalRounds = hostScore + clientScore;
+	if (totalRounds === 0) return { hostDelta: 0, clientDelta: 0 };
 
-	// Expected scores by classic ELO
-	const baseExpectedHost = 1 / (1 + Math.pow(10, (clientElo - hostElo) / 300));
-	const baseExpectedClient = 1 - baseExpectedHost;
+	const expectedHost = 1 / (1 + Math.pow(10, (clientElo - hostElo) / 400));
 
-	// Ping ratio capped at 1 (300 ms max)
-	const pingRatio = Math.min(clientPing / 300, 1);
+	const pingBonus = 1 + (Math.min(clientPing, 300) / 300) * maxPingEffect;
+	const weightedClientScore = clientScore * clientRoundWeight * pingBonus;
+	const weightedHostScore = hostScore;
 
-	// Client round weight boosted by ping (1 to 2)
-	const clientRoundWeight = 1 + pingRatio;
+	const totalWeighted = weightedHostScore + weightedClientScore;
+	const finalHostScore = weightedHostScore / totalWeighted;
 
-	// Weighted actual scores
-	const totalWeightedRounds = (hostScore * 1) + (clientScore * clientRoundWeight);
-	const hostActual = (hostScore * 1) / totalWeightedRounds;
-	const clientActual = (clientScore * clientRoundWeight) / totalWeightedRounds;
+	const hostChange = Math.round(K * (finalHostScore - expectedHost));
+	const clientChange = -hostChange;
 
-	// Adjust expected client score by a small factor (max -0.05)
-	const expectedClient = baseExpectedClient - 0.05 * pingRatio;
-	const expectedHost = 1 - expectedClient;
-
-	// Calculate raw deltas
-	let clientDelta = baseK * (clientActual - expectedClient);
-	let hostDelta = baseK * (hostActual - expectedHost);
-
-	// Soften client loss penalties at high ping (reduce loss magnitude)
-	if (clientDelta < 0) {
-		// eslint-disable-next-line no-inline-comments
-		const softeningFactor = 0.5 + 0.5 * (1 - pingRatio); // from 1 at 0 ping to 0.5 at 300 ping
-		clientDelta *= softeningFactor;
-	}
-
-	// Clip deltas to ±baseK (32) to avoid extreme swings
-	clientDelta = Math.max(-baseK, Math.min(baseK, clientDelta));
-	hostDelta = Math.max(-baseK, Math.min(baseK, hostDelta));
-
-	// Ensure zero-sum by balancing rounding error
-	const totalDelta = clientDelta + hostDelta;
-	if (totalDelta !== 0) {
-		// Distribute difference proportionally to keep sum zero
-		const clientRatio = Math.abs(clientDelta) / (Math.abs(clientDelta) + Math.abs(hostDelta));
-		clientDelta -= totalDelta * clientRatio;
-		hostDelta -= totalDelta * (1 - clientRatio);
-	}
-
-	return {
-		hostChange: Math.round(hostDelta),
-		clientChange: Math.round(clientDelta),
-	};
+	return { hostChange, clientChange };
 }
 
 app.post('/game-results', (req, res) => {
