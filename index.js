@@ -8,6 +8,11 @@ const app = express();
 app.use(express.json());
 dotenv.config();
 
+const options = {
+	key: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem'),
+	cert: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/fullchain.pem'),
+};
+
 const db = new sqlite3.Database('./database.db');
 db.serialize(() => {
 	db.run('CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT NOT NULL, elo INTEGER DEFAULT 600 NOT NULL)');
@@ -250,7 +255,13 @@ app.post('/game-results', (req, res) => {
 app.use(express.static('public'));
 
 // Start Server
+/*
 const PORT = process.env.PORT || 443;
 app.listen(PORT, () => {
 	console.log(`Server running on hehe:${PORT}`);
+});
+*/
+
+https.createServer(options, app).listen(process.env.PORT || 443, () => {
+	console.log('HTTPS server running on port 443');
 });
