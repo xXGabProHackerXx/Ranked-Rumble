@@ -250,7 +250,7 @@ app.post('/game-results', (req, res) => {
 app.use(express.static('public'));
 
 // Start Server
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 443;
 app.listen(PORT, () => {
 	console.log(`Server running on hehe:${PORT}`);
 });
