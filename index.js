@@ -9,8 +9,8 @@ app.use(express.json());
 dotenv.config();
 
 const options = {
-	key: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem'),
-	cert: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/fullchain.pem'),
+	key: fs.readFileSync('/etc/letsencrypt/live/rankedrumble.com/privkey.pem'),
+	cert: fs.readFileSync('/etc/letsencrypt/live/rankedrumble.com/fullchain.pem'),
 };
 
 const db = new sqlite3.Database('./database.db');
