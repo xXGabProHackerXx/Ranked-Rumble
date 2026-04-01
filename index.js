@@ -4,6 +4,7 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const dotenv = require('dotenv');
 const sqlite3 = require('sqlite3');
 const express = require('express');
+const https = require('node:https');
 const app = express();
 app.use(express.json());
 dotenv.config();
